@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Compliment Machine</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+            padding: 50px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .compliment-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .compliment-text {
+            font-weight: bold;
+            color: #333;
+            font-size: 24px;
+            overflow: hidden;
+            white-space: nowrap;
+            padding-bottom: 10px;
+        }
+        .you-are {
+            font-weight: bold;
+            color: #333;
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        /* Popup styling */
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none; /* Hidden by default */
+        }
+        .popup-content {
+            text-align: center;
+        }
+        .close-btn {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            cursor: pointer;
+            color: #aaa;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>The Compliment Machine</h1>
+        <div class="compliment-container">
+            <span class="you-are">You are</span>
+            <span id="compliment" class="compliment-text"></span>
+        </div>
+        <button onclick="startCompliment()">Get Compliment</button>
+        <button onclick="showComplimentCount()">Show Compliment Count</button>
+    </div>
+
+    <!-- Popup for displaying compliment count -->
+    <div id="popup" class="popup">
+        <span class="close-btn" onclick="closePopup()">&times;</span>
+        <div class="popup-content">
+            <h2>Your Compliment Count</h2>
+            <p>You have received <span id="complimentCount">0</span> compliments!</p>
+        </div>
+    </div>
+
+    <script>
+        const compliments = [
+                 "beautiful",
+            "inspiring",
+            "incredibly talented",
+            "positively contagious",
+            "a ray of sunshine on a cloudy day",
+            "one of a kind",
+            "making the world a better place",
+            "a true friend",
+            "an amazing listener",
+            "having a heart of gold",
+            "extraordinary",
+            "unique",
+            "phenomenal",
+            "fantastic",
+            "exceptional",
+            "outstanding",
+            "wonderful",
+            "spectacular",
+            "brilliant",
+            "charming",
+            "magnificent",
+            "splendid",
+            "superb",
+            "terrific",
+            "awesome",
+            "stellar",
+            "fabulous",
+            "remarkable",
+            "impressive",
+            "gorgeous",
+            "radiant",
+            "exquisite",
+            "divine",
+            "angelic",
+            "graceful",
+            "elegant",
+            "majestic",
+            "captivating",
+            "enchanting",
+            "breathtaking",
+            "awe-inspiring",
+            "irresistible",
+            "heavenly",
+            "phenomenal",
+            "spellbinding",
+            "charismatic",
+            "fantabulous",
+            "delightful",
+            "alluring",
+            "bewitching",
+            "riveting",
+            "mesmerizing",
+            "dreamy",
+            "fantasmic",
+            "adopted",
+            // Add 100 more compliments
+            "admirable",
+            "astounding",
+            "blissful",
+            "breathtaking",
+            "captivating",
+            "celestial",
+            "dazzling",
+            "effervescent",
+            "enlightening",
+            "exhilarating",
+            "extraordinary",
+            "flawless",
+            "glorious",
+            "illustrious",
+            "invigorating",
+            "jubilant",
+            "magnanimous",
+            "magnificent",
+            "mesmerizing",
+            "noble",
+            "opulent",
+            "phenomenal",
+            "radiant",
+            "resplendent",
+            "serene",
+            "sublime",
+            "transcendent",
+            "unforgettable",
+            "whimsical",
+            "angelic",
+            "blissful",
+            "charismatic",
+            "divine",
+            "enchanting",
+            "enlightening",
+            "exquisite",
+            "graceful",
+            "heavenly",
+            "majestic",
+            "magnificent",
+            "mesmerizing",
+            "miraculous",
+            "radiant",
+            "serene",
+            "soothing",
+            "spellbinding",
+            "splendid",
+            "tranquil",
+            "wondrous",
+            "bewitching",
+            "charming",
+            "delightful",
+            "enrapturing",
+            "enthralling",
+            "entrancing",
+            "ethereal",
+            "fascinating",
+            "irresistible",
+            "captivating",
+            "seductive",
+            "alluring",
+            "enticing",
+            "beguiling",
+            "hypnotic",
+            "sensational",
+            "sensuous",
+            "voluptuous",
+            "angelic",
+            "divine",
+            "ethereal",
+            "heavenly",
+            "seraphic",
+            "sublime",
+            "celestial",
+            "godlike",
+            "godly",
+            "supernal",
+            "transcendent",
+            "empyrean",
+            "paradisiacal",
+            "paradisiac",
+            "beatific",
+            "cherubic",
+            "seraphic",
+            "supernatural",
+            "otherworldly",
+            "mystical",
+            "ethereal",
+            "unearthly",
+            "astral",
+            "celestial",
+            "transcendent",
+            "paradisiacal",
+            "divine",
+            "godlike",
+            "supernal",
+            "mystical",
+            "seraphic",
+            "ethereal",
+            "celestial",
+            "transcendent",
+            "paradisiacal",
+            "divine",
+            "supernal",
+            "mystical",
+            "seraphic",
+            "ethereal",
+            "celestial",
+            "transcendent",
+            "divine"
+            ];
+
+        let typingInterval;
+
+        function startCompliment() {
+            clearInterval(typingInterval); // Clear previous typing animation if any
+            const randomIndex = Math.floor(Math.random() * compliments.length);
+            const compliment = compliments[randomIndex];
+            displayCompliment(compliment);
+            saveCompliment(compliment); // Save the compliment to local storage
+        }
+
+        function displayCompliment(compliment) {
+            const element = document.getElementById("compliment");
+            element.innerHTML = ''; // Clear previous content
+            const text = compliment + "!";
+            let i = 0;
+            typingInterval = setInterval(() => {
+                element.innerHTML += text[i];
+                i++;
+                if (i === text.length) {
+                    clearInterval(typingInterval);
+                }
+            }, 100); // Adjust the typing speed here (100 milliseconds)
+        }
+
+        function saveCompliment(compliment) {
+            let complimentsSaved = JSON.parse(localStorage.getItem('compliments')) || [];
+            complimentsSaved.push(compliment);
+            localStorage.setItem('compliments', JSON.stringify(complimentsSaved));
+        }
+
+        function showComplimentCount() {
+            const complimentsSaved = JSON.parse(localStorage.getItem('compliments')) || [];
+            const count = complimentsSaved.length;
+            document.getElementById('complimentCount').innerText = count;
+            document.getElementById('popup').style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
